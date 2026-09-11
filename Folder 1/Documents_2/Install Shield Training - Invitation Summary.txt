@@ -1,0 +1,234 @@
+Install Shield Training - Invitation
+Thu, Jul 9, 2026
+
+Summary:
+
+The meeting covered hands-on MSI packaging workflows, troubleshooting installer failures, and MSI authoring concepts including custom actions, sequencing, AppSearch, and merge modules. Attendees confirmed using an MSI produced by AdminStudio for exercises because the trial tool on the training VM could not generate the full MSI output from the release wizard.
+
+The team demonstrated the IRP→ISM→MSI workflow and release-wizard options, and reviewed packaging output types (single compressed MSI, uncompressed with external files, and MSI with external CAB), plus the recommendation to create one CAP/CAF per feature to avoid excessive per-component files. SK located a usable MSI in an alternate project output and advised using it for hands-on work until a licensed environment is available.
+
+Installation troubleshooting and logging were demonstrated: building a silent install command, monitoring MSI processes and Event Viewer, enabling Image Path/Command Line in Task Manager, and reading verbose MSI logs to locate return codes and failing actions. A 1603 fatal error was shown and common causes were listed (insufficient privileges, file/AV/GPO blocking, network inaccessibility); elevation of the installer was recommended when privilege issues appear.
+
+MSI authoring topics included execute vs. UI sequences, standard action sequencing and rollback behavior, the importance of not reordering standard actions, and how custom actions must be explicitly scheduled. SK demonstrated the Direct Editor/Install-Seal view to inspect sequence tables, add table entries, and install merge modules; attendees saw how merge modules contribute components and must be integrated into an MSI. AppSearch/System Search usage was shown with examples (registry, file, drive searches) and how results populate MSI properties used in conditions or custom actions.
+
+Constraints and open items: the trial tooling limited saving edits and generating release MSIs, so a licensed Install-Seal/AdminStudio environment is needed to perform full hands-on custom-action exercises; Aman will confirm which MSI will be used for the next session. The instructor recommended practicing capture workflows, verbose-log analysis, and gaining basic PowerShell skills to support packaging tasks.
+
+
+Chapters & Topics:
+
+Attendance and roll call
+The meeting began with greetings and confirmation of who attended the prior session and who was present now. Several participants were noted as joining shortly, and the facilitator confirmed overall attendance.
+* The previous session had full attendance and some participants were joining late at the meeting start
+
+VM and session hosting
+The team confirmed whether to use the existing VM or a new one, and Aman explained he created a new VM with the necessary files. The hosts for the hands-on exercises (Jeevan and Durairaj) were announced.
+* A new VM was created and populated with the copied files for today's hands-on session
+* Jeevan and Durairaj were assigned to host and perform the hands-on exercises
+
+Opening ISM/IRP and build approach
+The group discussed opening the ISM or IRP files and preparing to create a new MSI, with the facilitator indicating options for which project file to use. Participants clarified the intended build targets before proceeding.
+
+Release wizard walkthrough
+The facilitator demonstrated the release wizard steps, showing how to create a new release, progress through product configuration, select images and features, and choose per-feature versus per-component packaging. Specific UI actions and navigation to the release folder were shown.
+* The workflow discussed is IRP → ISM → release wizard → MSI/CAF output
+* The team should prefer per-feature CAP/CAF output to avoid generating hundreds of per-component files
+
+CAP/CAF vs component outputs
+The facilitator explained the purpose of CAF/CAP files and the impact of choosing per-component versus per-feature output, including potential proliferation of files if per-component output is selected. The team reviewed where release outputs are placed.
+
+Troubleshooting build and ISM location
+The team attempted alternative build flows, reopened ISM from the project location, and tried direct builds rather than using the release wizard to work around the issue. Several navigation and configuration checks were performed to locate output artifacts.
+
+Trial limitation and decision to use Admin Studio MSI
+The team discovered the trial license prevented MSI generation in the current toolset and decided to use an MSI generated previously by Admin Studio for the hands-on exercises. The facilitator confirmed the process remains the same despite using that MSI.
+* The trial version in use is not producing MSI outputs, likely due to licensing restrictions
+* The team will use the MSI produced from Admin Studio for the hands-on exercises instead of expecting the trial tool to create MSI
+
+Packaging output options and trade-offs
+SK described the three packaging output options—compressed single MSI, uncompressed external files with an MSI stub, and external CAB with MSI—and explained how a compressed MSI embeds files while external options keep files accessible separately, noting update and security trade-offs and the industry preference for internally compressed MSIs to avoid mishandling or missing files during transfer.
+* SK explained the three packaging output options (compressed MSI, uncompressed files with MSI, and external CAB+MSI) and their trade-offs for updates and handling.
+
+Locating MSI and CAB in AdminStudio output
+SK navigated the AdminStudio output to show the generated MSI and associated CAB files, pointed to specific VLC MSI artifacts, and explained that when an external CAB is used both the MSI and CAB must accompany installations.
+* AdminStudio output includes both MSI and CAB artifacts when external CAB is chosen, and both files are required for installation in that mode.
+
+Attempted MSI modification and demo limits
+SK opened the VLC MSI to demo a small change to shortcuts but found the save button disabled, attributed this to the trial version not replicating the database, and closed extra windows to simplify the environment for further inspection.
+* The AdminStudio trial limitation prevented saving MSI edits during the demo, so SK closed other apps and reopened only the MSI for inspection.
+
+Plan to test installation on another VM and environment checks
+SK asked to copy the MSI to another VM and install it there to compare behavior, checked whether VLC was already installed on the test VM, and confirmed with Jeevan that VLC was not installed and that they would proceed with copying and installing the package.
+* The team agreed to copy the generated MSI to another VM and test installation behavior there.
+
+Building the silent installation command and best practices
+SK demonstrated constructing a silent installation command using /I and precise logging parameters (/L*v with no spaces), advised quoting paths containing spaces, and recommended using the Tab key in the file dialog to avoid typing errors when selecting the MSI and related files.
+* The silent install command for VLC uses /I for install and /L*v (no spaces) for log creation, and using Tab in the file dialog avoids typing errors.
+
+Monitoring installation via Task Manager and Event Viewer
+SK explained how to confirm silent-install completion by watching MSI processes in Task Manager and by reading Event Viewer and installer logs, and recommended enabling Task Manager columns for Image Path and Command Line to see where the process was launched from.
+* Installation progress and completion can be verified by observing MSI-related processes in Task Manager and by checking Event Viewer and the installer log file.
+
+Interpreting installer logs and troubleshooting 1603 errors
+SK reviewed the installer log showing a return code and error context, identified 1603 as a fatal error often caused by insufficient privileges, blocked access, antivirus/GPO, or network path issues, and instructed rerunning the install from an elevated command prompt to address privilege-related 1603 cases; Jeevan confirmed he started the installer as administrator.
+* Re-running the installer from an elevated command prompt was advised when 1603 indicates insufficient privileges, and Jeevan confirmed running as administrator.
+* Return code 1603 is a fatal installer error commonly caused by insufficient privileges, blocked file access, antivirus/GPO interference, or inaccessible network paths.
+
+License and demo access request
+SK asked Aman to check if a licensed Aman Studio or temporary licensed access could be arranged for one or two days to enable fuller demo functionality, and emphasized that licensed access would improve confidence for hands-on demonstrations. Jeevan said he would let the group know if it was possible to obtain the license.
+* A licensed Aman Studio or temporary licensed access was requested for demos and SK asked Aman to check availability for one or two days.
+* Jeevan committed to inform the group if obtaining the license is possible.
+* The trial version is acceptable to learn MSI concepts and visualization, but some behaviors (like saving a custom action) may not be fully testable without a licensed install.
+
+Manager check and machine sharing option
+SK and a conference room participant discussed checking with SK's manager about using an installed licensed copy for demos and SK committed to confirm the outcome the next day; SK also suggested using a shared machine remotely for demos if needed.
+* SK will check with his manager about using an installed licensed copy and promised to confirm the outcome the next day.
+
+Session count and scheduling
+The team reviewed session progress, SK counted approximately six completed sessions and identified the current meeting as the seventh, and SK planned the last session for Monday or Tuesday with packaging and MSI hands-on left to cover.
+* The meeting counted as the seventh session and SK plans the final session for Monday or Tuesday, focusing on MSI packaging and hands-on practice.
+* Remaining curriculum items include MSI packaging, sequencing, custom actions, permissions, and MST upgrade tables.
+
+Hands-on practice guidance
+SK emphasized hands-on practice as the primary learning method, recommending that participants perform capture workflows themselves (first snapshot, install, second snapshot, convert, adjust exclusions), and SK offered to share options and details for practice exercises.
+* SK advised hands-on practice steps: take snapshot, install, take second snapshot, convert, and refine exclusions to learn practical nuances.
+
+Reading MSI logs and verifying properties
+SK demonstrated how to read verbose MSI logs (L*V) to find property values such as username, ALLUSERS, and InstallDIR, advised searching logs using property names copied from the InstallShield Files and Folders view, and said logs reveal how directory properties resolve on each machine.
+* SK instructed participants to use verbose MSI logs to verify properties like ALLUSERS and InstallDIR and to search logs using property names copied from the project.
+
+Directory resolution and variable use
+SK explained how MSI directory placeholders (e.g., ProgramFiles64Folder, UserProfile) resolve to different machine paths and why using MSI variables is necessary to avoid hard-coded paths; he illustrated issues when Program Files reside on different drives and recommended relying on MSI target DIR resolution.
+
+Custom actions, ROOTDRIVE, and troubleshooting
+SK covered creating custom actions and warned against hard-coded paths in scripts because they can fail when the OS or Program Files exist on nonstandard drives; he showed how to enforce installation on a specific drive via the ROOTDRIVE property and explained common troubleshooting steps for missing folders, architecture mismatches, and per-user vs. system installs by inspecting the log and component settings.
+* Participants were strongly warned not to hard-code paths in custom action scripts and to prefer MSI variables or set a ROOTDRIVE property when clients require a specific installation drive.
+* Common installation failures can result from architecture mismatches (template summary or component bitness) or per-user vs system-level installs, and these should be diagnosed via the log.
+
+Log importance and skill cultivation
+The instructor emphasized the importance of reading and analyzing installer logs and encouraged the team to cultivate that skill through practice and follow-up questions. The instructor offered personal availability for help and prepared to wrap up the log portion before a break.
+* Reading and analyzing installer logs is a critical skill that attendees should cultivate through practice and instructor support.
+
+Machine shutdown and scheduling constraint
+A participant reported that their virtual machine shut down and the group checked whether it was a power issue; the shutdown prompted a brief break discussion. Another attendee noted an 11:00 meeting requiring the room and proposed skipping the break to continue until 10:55, which the instructor accepted.
+* The meeting continued without a formal break because another booking required the room at 11:00.
+
+Locating MSI entries in the log
+The instructor walked attendees through using the log viewer and search (control-F) to find MSI filenames and package locations, showing how an extracted MSI appears in the log and explaining that the installer will use that extracted copy during repairs.
+* The extracted MSI location in the installer cache is used for repair operations and deleting it can break repair, producing general errors.
+
+Implications of deleting installer cache and repair behavior
+The instructor explained that deleting or corrupting the installer cache can prevent repairs and cause general errors. He demonstrated that the installer references the cached MSI for repair operations and recommended verifying the MSI in the cached location when troubleshooting.
+
+Execution sequence and return values
+The instructor described MSI execution sequencing: actions (copying files, deleting) run in a defined order from the MSI database and each action returns a value—0 for success and 3 for error—so the log return values identify failing actions. He illustrated using launch condition and property changes as examples.
+* MSI actions run in a defined execution sequence and each action returns a value that indicates success (0) or error (3) to help locate failures.
+
+Mapping log names to sequence numbers in the authoring tool
+The instructor demonstrated the MSI authoring tool, showing execute and custom-action trees and how logged action names (app search, launch condition, install finalize) map to defined sequence numbers (for example, app search = 400 and install finalize = 6600). This mapping helps correlate log entries to MSI tables for diagnosis.
+* Participants were instructed to study "app search" and related MSI topics after the session and may consult the instructor for clarification.
+* Logged action names (for example, app search and launch condition) correspond to sequence numbers visible in the MSI authoring tool.
+
+Standard actions, limitations, and custom actions scheduling
+The instructor reviewed standard (built-in) MSI actions, noted that not all actions run for every installation scenario, and warned against manually disturbing standard action sequencing. He explained that reserved gaps allow insertion of custom actions, but custom actions must be scheduled explicitly and placed between appropriate standard actions to execute correctly.
+* Standard MSI action sequencing includes reserved gaps; custom actions must be explicitly scheduled and can be placed between standard actions without altering the built-in sequence.
+
+Pre-work and reading request
+The instructor asked attendees to read the provided custom-action context material and stressed that reading it in advance will make the custom-action creation and exercises easier to understand. He reassured attendees that multiple readings or peer discussion may be necessary and that the goal is to build their mastery rather than evaluate them.
+* Attendees were instructed to read the custom-action context material before the hands-on session to improve understanding and questions.
+
+Instructor intent and learning goals
+The instructor explained his objective is to guide attendees to become highly proficient even if he cannot answer every question, and he encouraged persistence in learning. He stated sequencing and conditions are critical for custom actions and indicated a focused custom-action session is planned next time.
+
+License and scheduling for hands-on work
+The instructor said a licensed install environment should be available by Monday and that hands-on custom-action work will proceed when the license and suitable MSI are accessible; he noted practical scheduling considerations and possible earlier partial demos if time permits.
+* The class will concentrate on creating and sequencing custom actions once a licensed environment is available, targeted for Monday.
+
+MSI selection guidance and instructor follow-up
+The instructor advised selecting a moderately complex MSI that already contains custom actions, warned against installers that are too trivial or too complex, and offered to suggest freeware MSIs for download, with a promise to provide details soon.
+* The instructor will provide recommendations for moderately complex, freely downloadable MSIs that include custom actions if attendees cannot locate suitable installers locally.
+
+PowerShell importance and peer teaching
+The instructor emphasized that basic PowerShell skills are essential for packaging tasks, asked if anyone had PowerShell experience, identified Venugopala as having some knowledge, and requested Venugopala provide a basic session or otherwise arrange PowerShell training for the group.
+* PowerShell proficiency is required and the group should arrange a basic PowerShell introduction, with Venugopala asked to assist if possible.
+
+Direct Editor and sequence tables explanation
+The instructor demonstrated the Direct Editor view, showing admin execute sequence and UI sequence tables, explained how to read sequence numbers and that execute sequences run based on conditions while UI sequences run only in UI mode, and noted that only the sequences needed by a particular MSI appear in those tables.
+* The Direct Editor shows admin execute and UI sequence tables and only displays the sequences required by the specific MSI.
+
+Tables, AppSearch, and merge modules
+The instructor explained that many MSI tables are blank when not required, pointed out AppSearch may be empty for some MSIs, and walked through adding merge modules from the redistributable view, including the option to download modules from the internet and how adding a module creates component entries and updates module tables for hands-on observation.
+* Merge modules can be added from the redistributable view and may be downloadable from the internet; adding them alters component and module tables in the project.
+
+Merge Module behavior and installation constraints
+The instructor clarified that Merge Modules (MSM) are a Windows Installer artifact that must be integrated into an MSI to be installed, and that MSMs install their own defined components into their own folders rather than into the primary product folder. The instructor emphasized MSM file naming/extension details and reiterated that MSMs require an MSI wrapper to execute.
+* MSMs install their components into their own predefined folders, not into the product's main installation folder.
+* Merge Modules (MSM) cannot be installed standalone and must be integrated into an MSI to be applied.
+* The lab environment cannot persist or fully demonstrate AppSearch runtime effects without an appropriate MSI/license to run and save results.
+
+Introduction to AppSearch / System Search concept
+The session introduced the AppSearch (system search) area of the tool, prompting learners to consider what system search does and confirming it is a pre-install detection mechanism. The instructor asked for ideas from participants and set up the next detailed explanation.
+
+How system searches determine installation conditions
+Aman explained that AppSearch searches the target machine and stores results in MSI properties. The instructor expanded with examples: checking Internet Explorer version or presence of specific files (e.g., explorer.exe or VLC.exe) or registry uninstall strings to detect installed applications, and using those results to conditionally install components so only the appropriate DLL/component is installed.
+* AppSearch/System Search is used to detect files, registry values, or INI contents on the target machine and store results in MSI properties.
+
+Properties and use of AppSearch results
+The instructor demonstrated how system search results populate properties (e.g., "InternetExplorerFound = yes/no") and showed how those properties drive conditions for component installation, launch conditions, and custom actions. The instructor explained default values, property setting based on search results, and reuse of properties across the installer logic.
+* Stored AppSearch properties can be used in component conditions, launch conditions, or custom actions to control installation behavior.
+
+Hands-on adding predefined and custom searches
+The class practiced adding system searches by right-clicking in the AppSearch area, choosing predefined searches, and walking through the predefined Adobe Reader 11 example that reads InstallPath from the registry and stores it as a property for later use. The instructor also described how to add custom searches (file, registry, drive, INI) and what inputs are required (root hive, registry path, INI section/key).
+* The predefined search workflow (example: Adobe Reader 11) reads InstallPath from the registry and sets a property representing that folder for subsequent actions.
+
+Direct Editor verification and lab limitations
+Participants were instructed to add a sample registry search and then inspect the AppSearch table in the Direct Editor to confirm a new entry appears. The instructor noted the lab limitation that changes cannot be saved or fully visualized without an appropriate license or MSI to run custom actions, and recommended practicing with a licensed MSI when available.
+* Adding a system search creates an AppSearch table entry visible in the Direct Editor, demonstrating the linkage between the UI and MSI tables.
+
+Session close and scheduling
+The meeting wrapped up with scheduling logistics: the group agreed to resume the session the next day at 09:00 rather than 08:30, and Aman committed to inform the group which MSI will be used for demonstrating custom actions in the next session.
+
+
+Action Items:
+
+* Jeevan will host and perform the hands-on exercises during the session
+* Durairaj will host and perform the hands-on exercises during the session
+* Meeting participant will uncheck the "create installation launcher setup.exe" option when building to attempt to produce MSI and CAF output when licensing allows
+* Meeting participant will take the VLC Media Player MSI from the package/output folder for use in the exercises
+* Meeting participant will open the ISM and try to create another build from the project location
+* Meeting participant will use the MSI generated from Admin Studio for the hands-on exercises due to the trial-tool limitation
+* Jeevan B C will copy the generated VLC MSI to another VM and attempt the install there to verify installation behavior.
+* Packaging engineer will enable the Image Path and Command Line columns in Task Manager for packaging and deployment troubleshooting.
+* Jeevan B C will re-run the silent install command from an elevated command prompt if the 1603 error recurs.
+* Jeevan B C will check whether a licensed version of Aman Studio or temporary licensed access can be obtained and will report back if possible.
+* SK will check with his manager about using an installed licensed copy for demo access and will confirm the outcome the next day.
+* SK will plan and schedule the final session for Monday or Tuesday and communicate the plan.
+* SK will share hands-on practice options and details with participants.
+* SK will provide help to attendees who have doubts about reading and analyzing the log.
+* Meeting participant will study "app search" and related MSI concepts after the session using internet resources or AI tools.
+* Meeting participant will repackage their output as a practice exercise and open the MSI to review execute and custom-action sequences.
+* Meeting participants will read the provided custom-action context material before the next session
+* SK will prepare to run the focused custom-action hands-on session once the licensed environment is available, targeted for Monday
+* SK will provide recommendations for moderately complex, freely downloadable MSIs (or share which MSIs to download) by tomorrow if possible
+* Venugopala will give a basic PowerShell overview or coordinate a short PowerShell session for the group
+* Meeting participants will add at least one predefined system search and then open the Direct Editor to verify the corresponding AppSearch table entry.
+* Meeting participants will join the resumed session tomorrow at 09:00.
+* Aman Riyaz Khan will confirm which MSI will be used for demonstrating custom actions tomorrow.
+
+
+Key Questions:
+
+* Are we working on the new VM or the same VM?
+* What is this.CAF/.CAP file and how is it produced?
+* Why is the tool not producing an MSI in the release folder?
+* Is VLC already installed on the target VM?
+* Do you remember the silent command to install VLC with a log?
+* How can we confirm whether a silent installation has completed?
+* When is the last session expected to occur?
+* Why is an MSI appearing in the log when we did not trigger that MSI?
+* What is the difference between the UI sequence and the execute sequence?
+* What is AppSearch / system search and what does it do?
+
+
+Notepad:
+
+* No notes

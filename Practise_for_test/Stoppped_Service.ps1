@@ -1,3 +1,4 @@
-# Get-Service | Where-Object {$_.Status -eq "Running"} | Select-Object -Property Name, Status
+Get-Service | Where-Object {$_.Status -eq "Stopped"} | Select-Object -Property Name, Status
+Start-Service -Name "wuauserv"
+Get-Service -Name "wuauserv" | Select-Object -Property Name, Status
 
-Get-ChildItem -Path 'D:\Document\NewAppProject' -Recurse 
